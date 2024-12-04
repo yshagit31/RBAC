@@ -29,5 +29,4 @@ This project is a **Role-Based Access Control (RBAC)** User Interface designed t
 - **Frontend**: React, Material-UI (MUI)
 - **Backend**: Node.js, Express.js (Mock APIs)
 - **Database**: MongoDB (for real implementation)
-- **Deployment**: Vercel/Netlify (optional for deployment)
 
