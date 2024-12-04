@@ -35,14 +35,15 @@ import {
   BlogPostShow,
 } from "./pages/blog-posts";
 import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
+  UserCreate,
+  UserEdit,
+  UserList,
+  UserShow,
+} from "./pages/users";
 import { Login } from "./pages/login";
 import { parseJwt } from "./utils/parse-jwt";
 import { profile } from "console";
+import Register from "./pages/register";
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {
@@ -56,11 +57,15 @@ axiosInstance.interceptors.request.use((config) => {
 
 function App() {
   const authProvider: AuthBindings = {
-    login: async ({ credential }: CredentialResponse) => {
-      const profileObj = credential ? parseJwt(credential) : null;
+    login: async ({ credential , email, password}: { credential?: string; email?: string; password?: string }) => {
+      if (credential) { 
+        // const profileObj = credential ? parseJwt(credential) : null;
+        const profileObj = parseJwt(credential);
+
       if(profileObj)
       {
-        const response=await fetch('http://localhost:5173/api/v1/users' ,{
+        try{
+        const response=await fetch('http://localhost:8000/api/v1/users' ,{
             method:'POST',
             headers:{ 'Content-Type': 'application/json'},
             body:JSON.stringify({
@@ -68,10 +73,12 @@ function App() {
               avatar:profileObj.picture
             })
         })
+        if (!response.ok) {
+          console.error("Failed to save user data:", await response.text());
+          return { success: false };
+        }
         const data= await response.json();
-      }
-
-      if (profileObj) {
+   
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -79,14 +86,48 @@ function App() {
             avatar: profileObj.picture,
           })
         );
+     
+        // const savedUser = localStorage.getItem("user");
+        // console.log("Retrieved user from localStorage:", savedUser);
 
         localStorage.setItem("token", `${credential}`);
+        // console.log()
 
+        // const savedToken = localStorage.getItem("token");
+        // console.log("Retrieved token from localStorage:", savedToken);
         return {
           success: true,
           redirectTo: "/",
         };
+      } catch (error) {
+        console.error("Error during login:", error);
+        return { success: false };
       }
+    }}
+
+    if (email && password) {
+      try {
+        const response = await fetch("http://localhost:8000/api/checklogin/val", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to authenticate user:", await response.text());
+          return { success: false };
+        }
+
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        return { success: true, redirectTo: "/" };
+      } catch (error) {
+        console.error("Error during email/password login:", error);
+        return { success: false };
+      }
+    }
 
       return {
         success: false,
@@ -210,10 +251,10 @@ function App() {
                       <Route path="show/:id" element={<BlogPostShow />} />
                     </Route>
                     <Route path="/users">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
+                      <Route index element={<UserList />} />
+                      <Route path="create" element={<UserCreate />} />
+                      <Route path="edit/:id" element={<UserEdit />} />
+                      <Route path="show/:id" element={<UserShow />} />
                     </Route>
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>
@@ -228,6 +269,7 @@ function App() {
                     }
                   >
                     <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
                   </Route>
                 </Routes>
 
