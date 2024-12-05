@@ -50,7 +50,7 @@ npm install
 
 ### 3. Set Up Environment Variables:
 ## Frontend .env File:
-# In the frontend directory, create a .env file and add the following variables:
+### In the frontend directory, create a .env file and add the following variables:
 
 ```bash
 # Frontend Environment Variables
@@ -58,7 +58,7 @@ VITE_GOOGLE_CLIENT_ID=your_google_client_id_here
 ```
 
 ## Backend .env File:
-# In the backend directory, create a .env file and add the following variables:
+### In the backend directory, create a .env file and add the following variables:
 
 ```bash
 # Backend Environment Variables
