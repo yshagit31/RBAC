@@ -25,6 +25,63 @@ This project is a **Role-Based Access Control (RBAC)** User Interface designed t
 5. **Responsive Design**
    - Fully responsive and accessible UI for all devices, ensuring usability across platforms.
 
+## Setup Instructions
+
+### 1. Clone the repository:
+
+##Clone the repository to your local machine:
+
+```bash
+git clone <repository_url>
+cd <project_directory>
+```
+
+###2. Install Dependencies:
+
+```bash   
+cd client
+npm install
+```
+
+```bash
+cd server
+npm install
+```
+
+###3. Set Up Environment Variables:
+##Frontend .env File:
+#In the frontend directory, create a .env file and add the following variables:
+
+```bash
+# Frontend Environment Variables
+VITE_GOOGLE_CLIENT_ID=your_google_client_id_here
+```
+
+##Backend .env File:
+#In the backend directory, create a .env file and add the following variables:
+
+```bash
+# Backend Environment Variables
+MONGODB_URL=<your mongo_db_url>
+ADMIN_EMAIL=<the mail you want to make admin>
+```
+
+###4.Run the Development Server:
+##Start the React Application:
+
+```bash
+cd client
+npm run dev
+```
+
+Start the Backend API:
+Next, navigate to the backend directory and start the backend server:
+
+```bash
+cd client
+npm run dev
+```
+
 ## **Technologies Used**
 - **Frontend**: React, Material-UI (MUI)
 - **Backend**: Node.js, Express.js (Mock APIs)
