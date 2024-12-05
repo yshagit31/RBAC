@@ -10,13 +10,11 @@ app.use(cors({
     // {
     // origin: ['http://localhost:5173/login', 'https://compra-price.vercel.app'], 
     origin: ('*'), 
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST','UPDATE', 'DELETE','PUT','PATCH', ],
     credentials: true, 
 // }
 }
 ));
-
-
 
 app.use(express.json({limit:'50mb'}));
 // const port= 8000;

@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 const getAllUsers= async (req,res) =>{};
 const createUser= async(req,res)=>{
     try{
-        const {email,password}=req.body;
+        const {email,password,name}=req.body;
         console.log(email,password);
         const userExists= await User.findOne({email});
         console.log("User exists",userExists);
@@ -14,7 +14,7 @@ const createUser= async(req,res)=>{
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser= await User.create({
-           email,password : hashedPassword,
+           email,name,password : hashedPassword,
         })
 
         if(email==process.env.ADMIN_EMAIL)
@@ -39,10 +39,6 @@ const getloginInfo= async(req,res)=>{
         const userExists= await User.findOne({email});
         console.log("User exists",userExists);
         if(userExists) return res.status(200).json(userExists);
-        if(email==process.env.ADMIN_EMAIL)
-            {
-             
-            }
 
         const isPasswordValid = await bcrypt.compare(password, userExists.password);
         if (!isPasswordValid) {

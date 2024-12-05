@@ -1,49 +1,50 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // To make API requests
+import axios from "axios";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { DeleteButton, EditButton, List, ShowButton, useDataGrid } from "@refinedev/mui";
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material"; // Material UI components for dropdown
+import { DeleteButton, EditButton, ShowButton, List, useDataGrid } from "@refinedev/mui";
+import { MenuItem, Select, FormControl } from "@mui/material";
+import { useGetIdentity } from "@refinedev/core";
+
+interface UserListProps {
+  role: string;
+}
+
+type IUser = {
+  _id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  role: string;
+};
 
 export const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null); // To store the current logged-in user
-  const [loading, setLoading] = useState(true); // For loading state
+  const [users, setUsers] = useState<IUser[]>([]);
+  const { data: currentuser } = useGetIdentity<IUser>();
+  const [loading, setLoading] = useState(true);
 
-  // Fetch user data on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // Assuming you are checking user authentication with a token or session
         const response = await axios.get("http://localhost:8000/api/v1/users");
-        setUsers(response.data);
+        const usersWithSno = response.data.map((user, index) => ({
+          ...user,
+          sno: index + 1,
+        }));
+        setUsers(usersWithSno);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);
         setLoading(false);
       }
     };
-
-    // Fetch current user info (mocked here for demo purposes)
-    const fetchCurrentUser = async () => {
-      try {
-        // Here you would check the logged-in user's role (via an API or token)
-        const response = await axios.get("http://localhost:8000/api/v1/user");
-        setCurrentUser(response.data); // Assuming response contains user info (name, role, etc.)
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-      }
-    };
-
     fetchUsers();
-    fetchCurrentUser();
   }, []);
 
   const { dataGridProps } = useDataGrid({});
-
   const columns = React.useMemo<GridColDef[]>(() => [
     {
-      field: "id",
-      headerName: "ID",
+      field: "sno",
+      headerName: "S. No.",
       type: "number",
       minWidth: 50,
     },
@@ -65,23 +66,21 @@ export const UserList = () => {
       flex: 1,
       minWidth: 150,
       renderCell: (params) => {
-        // Only show dropdown if the user is an admin
-        if (currentUser?.role === "admin") {
+        if (currentuser?.role === "ADMIN") {
           return (
             <FormControl fullWidth>
-              <InputLabel>Role</InputLabel>
               <Select
                 value={params.row.role}
-                onChange={(e) => handleRoleChange(e, params.row.id)}
+                onChange={(e) => handleRoleChange(e, params.row._id)}
               >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="moderator">Moderator</MenuItem>
-                <MenuItem value="client">Client</MenuItem>
+                <MenuItem value="ADMIN">Admin</MenuItem>
+                <MenuItem value="MODERATOR">Moderator</MenuItem>
+                <MenuItem value="CLIENT">Client</MenuItem>
               </Select>
             </FormControl>
           );
         }
-        return params.row.role; // Display the role as text if not admin
+        return params.row.role;
       },
     },
     {
@@ -90,29 +89,37 @@ export const UserList = () => {
       sortable: false,
       renderCell: ({ row }) => (
         <>
-          <EditButton hideText recordItemId={row.id} />
-          <ShowButton hideText recordItemId={row.id} />
-          <DeleteButton hideText recordItemId={row.id} />
+          <EditButton hideText recordItemId={row._id} />
+          <ShowButton hideText recordItemId={row._id} />
+          <DeleteButton hideText recordItemId={row._id} />
         </>
       ),
       align: "center",
       headerAlign: "center",
       minWidth: 80,
     },
-  ], [currentUser]);
+  ], [currentuser]);
 
-  // Handle role change
-  const handleRoleChange = async (event, userId) => {
+  const handleRoleChange = async (event, userId: string) => {
     const newRole = event.target.value;
+    if (!userId) {
+      console.error("Invalid user ID");
+      return;
+    }
 
     try {
-      const response = await axios.patch(`http://localhost:8000/api/v1/users/${userId}`, { role: newRole });
-      // Update the users state with the new role
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, role: newRole } : user
-        )
+      const response = await axios.patch(
+        `http://localhost:8000/api/v1/users/${userId}`,
+        { role: newRole }
       );
+  
+      if (response.status === 200) {
+        setUsers((prevUsers) =>
+          prevUsers.map((curr) =>
+            curr._id === userId ? { ...curr, role: newRole } : curr
+          )
+        );
+      }
     } catch (error) {
       console.error("Error updating user role:", error);
     }
@@ -125,7 +132,8 @@ export const UserList = () => {
         rows={users}
         columns={columns}
         autoHeight
-        loading={loading} // Show loading state
+        loading={loading}
+        getRowId={(row) => row._id}
       />
     </List>
   );

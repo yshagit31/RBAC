@@ -44,6 +44,7 @@ import { Login } from "./pages/login";
 import { parseJwt } from "./utils/parse-jwt";
 import { profile } from "console";
 import Register from "./pages/register";
+import { useState,useEffect } from "react";
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {
@@ -56,12 +57,32 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 function App() {
+  
+  // const [role,setRole]=useState("");
+
+  // useEffect(() => {
+  //   console.log("Updated role:", role); 
+  // }, [role]); 
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const user = localStorage.getItem("user");
+      console.log("Updated user from localStorage:", user);
+    };
+  
+    window.addEventListener("storage", handleStorageChange);
+  
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   const authProvider: AuthBindings = {
     login: async ({ credential , email, password}: { credential?: string; email?: string; password?: string }) => {
       if (credential) { 
-        // const profileObj = credential ? parseJwt(credential) : null;
-        const profileObj = parseJwt(credential);
-
+        const profileObj = credential ? parseJwt(credential) : null;
+        // const profileObj = parseJwt(credential);
+    
       if(profileObj)
       {
         try{
@@ -78,7 +99,9 @@ function App() {
           return { success: false };
         }
         const data= await response.json();
-   
+        // console.log(data);
+        // setRole(data?.role || "");
+        // console.log(role);
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -119,9 +142,13 @@ function App() {
         }
 
         const data = await response.json();
-        console.log(data);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
+        // console.log(data);
+        // setRole(data?.role || "");
+        // console.log(role);
+        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("token", data);
+        // console.log("User saved:", data);
+        // console.log("Token saved:", data);
         return { success: true, redirectTo: "/" };
       } catch (error) {
         console.error("Error during email/password login:", error);
@@ -176,6 +203,7 @@ function App() {
     getPermissions: async () => null,
     getIdentity: async () => {
       const user = localStorage.getItem("user");
+      // console.log(user);
       if (user) {
         return JSON.parse(user);
       }
@@ -194,7 +222,7 @@ function App() {
           <RefineSnackbarProvider>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+                dataProvider={dataProvider("http://localhost:8000/api/v1/users")}
                 notificationProvider={notificationProvider}
                 routerProvider={routerBindings}
                 authProvider={authProvider}
@@ -251,7 +279,8 @@ function App() {
                       <Route path="show/:id" element={<BlogPostShow />} />
                     </Route>
                     <Route path="/users">
-                      <Route index element={<UserList />} />
+                      {/* <Route index element={<UserList role={role} />} /> */}
+                      <Route index element={<UserList/>} />
                       <Route path="create" element={<UserCreate />} />
                       <Route path="edit/:id" element={<UserEdit />} />
                       <Route path="show/:id" element={<UserShow />} />

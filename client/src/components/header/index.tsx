@@ -11,6 +11,7 @@ import { HamburgerMenu, RefineThemedLayoutV2HeaderProps } from "@refinedev/mui";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../../contexts/color-mode";
 
+
 type IUser = {
   id: number;
   name: string;
@@ -20,10 +21,10 @@ type IUser = {
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({
   sticky = true,
 }) => {
+
   const { mode, setMode } = useContext(ColorModeContext);
-
   const { data: user } = useGetIdentity<IUser>();
-
+  
   return (
     <AppBar position={sticky ? "sticky" : "relative"}>
       <Toolbar>

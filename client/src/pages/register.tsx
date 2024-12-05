@@ -12,6 +12,7 @@ import {
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState("");
+  const [name,setName]=useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,7 +20,7 @@ const Register: React.FC = () => {
 
   const handleRegister = async () => {
 
-        if(email &&password &&confirmPassword)
+        if(email &&password &&confirmPassword&&name)
         {
           if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match.");
@@ -31,7 +32,7 @@ const Register: React.FC = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ email, password }), 
+              body: JSON.stringify({ email, password,name }), 
             });
         
             if (response.ok) {
@@ -91,6 +92,14 @@ const Register: React.FC = () => {
           gap: 2,
         }}
       >
+           <TextField
+          label="Name"
+          variant="outlined"
+          type="name"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <TextField
           label="Email"
           variant="outlined"
