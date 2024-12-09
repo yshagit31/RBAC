@@ -82,6 +82,7 @@ function App() {
       if (credential) { 
         const profileObj = credential ? parseJwt(credential) : null;
         // const profileObj = parseJwt(credential);
+        console.log(profileObj);
     
       if(profileObj)
       {
@@ -91,7 +92,7 @@ function App() {
             headers:{ 'Content-Type': 'application/json'},
             body:JSON.stringify({
               ...profileObj,
-              avatar:profileObj.picture
+              avatar:profileObj.picture,
             })
         })
         if (!response.ok) {
@@ -99,13 +100,14 @@ function App() {
           return { success: false };
         }
         const data= await response.json();
-        // console.log(data);
+        console.log(data);
         // setRole(data?.role || "");
         // console.log(role);
         localStorage.setItem(
           "user",
           JSON.stringify({
             ...profileObj,
+            ...data,
             avatar: profileObj.picture,
           })
         );
@@ -113,7 +115,7 @@ function App() {
         // const savedUser = localStorage.getItem("user");
         // console.log("Retrieved user from localStorage:", savedUser);
 
-        localStorage.setItem("token", `${credential}`);
+        localStorage.setItem("token", `${credential}`); 
         // console.log()
 
         // const savedToken = localStorage.getItem("token");
@@ -203,7 +205,7 @@ function App() {
     getPermissions: async () => null,
     getIdentity: async () => {
       const user = localStorage.getItem("user");
-      // console.log(user);
+      console.log(user);
       if (user) {
         return JSON.parse(user);
       }
@@ -222,7 +224,7 @@ function App() {
           <RefineSnackbarProvider>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("http://localhost:8000/api/v1/users")}
+                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
                 notificationProvider={notificationProvider}
                 routerProvider={routerBindings}
                 authProvider={authProvider}

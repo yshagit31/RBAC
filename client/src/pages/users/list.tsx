@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DeleteButton, EditButton, ShowButton, List, useDataGrid } from "@refinedev/mui";
-import { MenuItem, Select, FormControl } from "@mui/material";
+import { MenuItem, Select, FormControl, Fab } from "@mui/material";
 import { useGetIdentity } from "@refinedev/core";
 
 interface UserListProps {
@@ -21,12 +21,14 @@ export const UserList = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const { data: currentuser } = useGetIdentity<IUser>();
   const [loading, setLoading] = useState(true);
+  const [role,setRole]=useState("");
+  // const [IsAdmin,setIsAdmin]=useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/v1/users");
-        const usersWithSno = response.data.map((user, index) => ({
+        const usersWithSno = response.data.map((user:IUser , index :number) => ({
           ...user,
           sno: index + 1,
         }));
@@ -39,6 +41,8 @@ export const UserList = () => {
     };
     fetchUsers();
   }, []);
+
+  const IsAdmin = currentuser?.role === "ADMIN";
 
   const { dataGridProps } = useDataGrid({});
   const columns = React.useMemo<GridColDef[]>(() => [
@@ -66,7 +70,7 @@ export const UserList = () => {
       flex: 1,
       minWidth: 150,
       renderCell: (params) => {
-        if (currentuser?.role === "ADMIN") {
+        if (IsAdmin) {
           return (
             <FormControl fullWidth>
               <Select
@@ -89,9 +93,9 @@ export const UserList = () => {
       sortable: false,
       renderCell: ({ row }) => (
         <>
-          <EditButton hideText recordItemId={row._id} />
+          {IsAdmin && <EditButton hideText recordItemId={row._id} />} 
           <ShowButton hideText recordItemId={row._id} />
-          <DeleteButton hideText recordItemId={row._id} />
+         {IsAdmin && <DeleteButton hideText recordItemId={row._id} />} 
         </>
       ),
       align: "center",
@@ -100,7 +104,7 @@ export const UserList = () => {
     },
   ], [currentuser]);
 
-  const handleRoleChange = async (event, userId: string) => {
+  const handleRoleChange = async (event:React.ChangeEvent<HTMLSelectElement>, userId: string) => {
     const newRole = event.target.value;
     if (!userId) {
       console.error("Invalid user ID");
