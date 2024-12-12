@@ -28,11 +28,13 @@ export const UserList = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/v1/users");
+        // console.log(response.data);
         const usersWithSno = response.data.map((user:IUser , index :number) => ({
           ...user,
           sno: index + 1,
         }));
         setUsers(usersWithSno);
+        // console.log(users);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -93,7 +95,7 @@ export const UserList = () => {
       sortable: false,
       renderCell: ({ row }) => (
         <>
-          {IsAdmin && <EditButton hideText recordItemId={row._id} />} 
+          {IsAdmin && <EditButton hideText recordItemId={row._id}/>} 
           <ShowButton hideText recordItemId={row._id} />
          {IsAdmin && <DeleteButton hideText recordItemId={row._id} />} 
         </>

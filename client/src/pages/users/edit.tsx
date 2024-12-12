@@ -1,21 +1,92 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Box, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 import { Edit } from "@refinedev/mui";
-import { useForm } from "@refinedev/react-hook-form";
+import { useForm, useController } from "react-hook-form";
+import { useParams } from "react-router-dom";
+
+type IUser = {
+  _id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  role: string;
+};
 
 export const UserEdit = () => {
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/v1/users/${id}`);
+        setUser(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, [id]);
+
+  // Initialize the form with React Hook Form
   const {
-    saveButtonProps,
     register,
+    handleSubmit,
+    setValue,
+    control,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+      role: user?.role || "",
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      setValue("name", user.name);
+      setValue("email", user.email);
+      setValue("role", user.role);
+    }
+  }, [user, setValue]);
+
+  const {
+    field: roleField,
+    fieldState: { error: roleError },
+  } = useController({
+    control,
+    name: "role",
+    rules: { required: "This field is required" },
+  });
+
+  const onSubmit = async (data: { name: string; email: string; role: string }) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:8000/api/v1/users/${id}`, // Update user API endpoint
+        {
+          name: data.name,
+          email: data.email,
+          role: data.role,
+        }
+      );
+
+      if (response.status === 200) {
+        // Optionally, show a success message or navigate away
+        alert("User updated successfully");
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
-      <Box
-        component="form"
-        sx={{ display: "flex", flexDirection: "column" }}
-        autoComplete="off"
-      >
+    <Edit saveButtonProps={{ onClick: handleSubmit(onSubmit) }}>
+      <Box component="form" sx={{ display: "flex", flexDirection: "column" }} autoComplete="off">
         {/* Name Field */}
         <TextField
           {...register("name", {
@@ -54,15 +125,19 @@ export const UserEdit = () => {
         <FormControl fullWidth margin="normal">
           <InputLabel shrink>Role</InputLabel>
           <Select
-            {...register("role", { required: "This field is required" })}
-            error={!!(errors as any)?.role}
+            {...roleField}
+            error={!!roleError}
             label="Role"
-            name="role"
           >
             <MenuItem value="ADMIN">Admin</MenuItem>
             <MenuItem value="MODERATOR">Moderator</MenuItem>
             <MenuItem value="CLIENT">Client</MenuItem>
           </Select>
+          {roleError && (
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {roleError.message}
+            </div>
+          )}
         </FormControl>
       </Box>
     </Edit>
