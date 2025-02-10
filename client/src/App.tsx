@@ -87,7 +87,7 @@ function App() {
       if(profileObj)
       {
         try{
-        const response=await fetch('http://localhost:8000/api/v1/users' ,{
+        const response=await fetch('http://localhost:8000/api/v1/users/google' ,{
             method:'POST',
             headers:{ 'Content-Type': 'application/json'},
             body:JSON.stringify({
@@ -224,7 +224,7 @@ function App() {
           <RefineSnackbarProvider>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+                dataProvider={dataProvider("http://localhost:8000/api/v1")}
                 notificationProvider={notificationProvider}
                 routerProvider={routerBindings}
                 authProvider={authProvider}

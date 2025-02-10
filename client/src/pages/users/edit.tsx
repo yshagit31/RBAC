@@ -4,6 +4,12 @@ import { Box, TextField, MenuItem, Select, FormControl, InputLabel } from "@mui/
 import { Edit } from "@refinedev/mui";
 import { useForm, useController } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { useNotification } from "@refinedev/core";
+// import handleDeleteUser from "./delete" 
+import { useDeleteUser } from "./delete";
+import { useNavigate } from "react-router-dom";
+import {Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography  } from "@mui/material";
+
 
 type IUser = {
   _id: string;
@@ -14,9 +20,20 @@ type IUser = {
 };
 
 export const UserEdit = () => {
+  const { handleDeleteUser } = useDeleteUser(); 
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IUser | null>(null);
+  const { open } = useNotification();
+  const navigate=useNavigate();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const handleOpenDeleteDialog = (id: string) => {
+    setSelectedUserId(id);
+    setOpenDialog(true);
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -76,16 +93,25 @@ export const UserEdit = () => {
       );
 
       if (response.status === 200) {
-        // Optionally, show a success message or navigate away
-        alert("User updated successfully");
+        open?.({
+          type: "success",
+          message: response.data.message || "User Updated successfully",
+        });
+        navigate("/users");
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error updating user:", error);
+      open?.({
+        type: "error",
+        message: error.response?.data?.message || "Error Updating user",
+      });
     }
   };
 
   return (
-    <Edit saveButtonProps={{ onClick: handleSubmit(onSubmit) }}>
+    <Edit saveButtonProps={{ onClick: handleSubmit(onSubmit) }} 
+     deleteButtonProps={{ onClick: () =>  handleOpenDeleteDialog (id!) }}>
+
       <Box component="form" sx={{ display: "flex", flexDirection: "column" }} autoComplete="off">
         {/* Name Field */}
         <TextField
@@ -140,6 +166,18 @@ export const UserEdit = () => {
           )}
         </FormControl>
       </Box>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>
+          <Typography variant="h6">Confirm Deletion</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">Are you sure you want to delete this user?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">Cancel</Button>
+          <Button onClick={() =>handleDeleteUser(selectedUserId!)} color="error" variant="contained">Delete</Button>
+        </DialogActions>
+      </Dialog>
     </Edit>
   );
 };

@@ -9,8 +9,10 @@ import {
 
 export const BlogPostShow = () => {
   const { queryResult } = useShow({});
+  console.log("queryResult",queryResult);
 
   const { data, isLoading } = queryResult;
+  console.log("data",data);
 
   const record = data?.data;
 
