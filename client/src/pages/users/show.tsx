@@ -22,8 +22,8 @@ export const UserShow = () => {
 
   const record = data?.data;
 
-  console.log("record",record?._id);
-  console.log("current user",currentuser?._id);
+  // console.log("record",record?._id);
+  // console.log("current user",currentuser?._id);
   const canEdit = record?._id === currentuser?._id || IsAdmin;
 
 

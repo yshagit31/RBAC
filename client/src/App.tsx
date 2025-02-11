@@ -45,6 +45,9 @@ import { parseJwt } from "./utils/parse-jwt";
 import { profile } from "console";
 import Register from "./pages/register";
 import { useState,useEffect } from "react";
+import { CustomSider } from "./components/header/CustomSider";
+import {logo,yariga} from "./assets"
+import { useThemedLayoutContext } from "@refinedev/mui";
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {
@@ -82,7 +85,7 @@ function App() {
       if (credential) { 
         const profileObj = credential ? parseJwt(credential) : null;
         // const profileObj = parseJwt(credential);
-        console.log(profileObj);
+        // console.log(profileObj);
     
       if(profileObj)
       {
@@ -100,7 +103,7 @@ function App() {
           return { success: false };
         }
         const data= await response.json();
-        console.log(data);
+        // console.log(data);
         // setRole(data?.role || "");
         // console.log(role);
         localStorage.setItem(
@@ -180,7 +183,7 @@ function App() {
       };
     },
     onError: async (error) => {
-      console.error(error);
+      // console.error(error);
       return { error };
     },
     check: async () => {
@@ -205,7 +208,7 @@ function App() {
     getPermissions: async () => null,
     getIdentity: async () => {
       const user = localStorage.getItem("user");
-      console.log(user);
+      // console.log(user);
       if (user) {
         return JSON.parse(user);
       }
@@ -213,6 +216,45 @@ function App() {
       return null;
     },
   };
+
+  const { siderCollapsed } = useThemedLayoutContext();
+
+  console.log("collapsed",siderCollapsed);
+
+  useEffect(()=>{
+    console.log("collapsed",siderCollapsed);
+  },[siderCollapsed])
+
+  const MyTitle: React.FC = () => (
+
+    // <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+    //   <img src={logo} alt="Logo" style={{ height: "32px" }} />
+    //   <span style={{ fontSize: "25px", fontWeight: 540 }}>Yariga</span>
+    // </div>
+    <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: siderCollapsed ? "center" : "flex-start",
+      marginLeft: siderCollapsed ? "15px !important" : "0 !important",
+      gap: siderCollapsed ? "0" : "20px",
+      width: "100%",
+    }}
+  >
+    <img src={logo} alt="Logo" style={{ height: "32px" }} />
+    {!siderCollapsed && (
+      <span style={{ fontSize: "25px", fontWeight: 540 }}>Yariga</span>
+    )}
+  </div>
+  );
+
+  const onSiderCollapse = (collapsed: boolean) => {
+    localStorage.setItem("siderCollapsed", JSON.stringify(collapsed));
+  };
+
+  const initialSiderCollapsed = JSON.parse(localStorage.getItem("siderCollapsed") || "false");
+
+  
 
   return (
     <BrowserRouter>
@@ -264,7 +306,11 @@ function App() {
                         key="authenticated-inner"
                         fallback={<CatchAllNavigate to="/login" />}
                       >
-                        <ThemedLayoutV2 Header={Header}>
+                        <ThemedLayoutV2 
+                        Title={MyTitle}  Header={Header}
+                        initialSiderCollapsed={initialSiderCollapsed}
+                        onSiderCollapsed={onSiderCollapse}
+                        >
                           <Outlet />
                         </ThemedLayoutV2>
                       </Authenticated>
