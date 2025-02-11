@@ -145,7 +145,7 @@ export const UserList = () => {
     return baseColumns;
   }, [currentuser]);
   
-  console.log("IS admin",IsAdmin);
+  // console.log("IS admin",IsAdmin);
   // const handleRoleChange = async (event:React.ChangeEvent<HTMLSelectElement>, userId: string) => {
   //   const newRole = event.target.value;
   //   if (!userId) {
