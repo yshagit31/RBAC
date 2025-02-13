@@ -34,6 +34,8 @@ import {
   BlogPostList,
   BlogPostShow,
 } from "./pages/blog-posts";
+import { Dashboard } from "./pages/dashboard";
+
 import {
   UserCreate,
   UserEdit,
@@ -48,6 +50,8 @@ import { useState,useEffect } from "react";
 import { CustomSider } from "./components/header/CustomSider";
 import {logo,yariga} from "./assets"
 import { useThemedLayoutContext } from "@refinedev/mui";
+import { PeopleAltOutlined } from "@mui/icons-material";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {
@@ -271,19 +275,26 @@ function App() {
                 routerProvider={routerBindings}
                 authProvider={authProvider}
                 resources={[
+                  // {
+                  //   name: "blog_posts",
+                  //   list: "/blog-posts",
+                  //   create: "/blog-posts/create",
+                  //   edit: "/blog-posts/edit/:id",
+                  //   show: "/blog-posts/show/:id",
+                  //   meta: {
+                  //     canDelete: true,
+                  //   },
+                  // },
                   {
-                    name: "blog_posts",
-                    list: "/blog-posts",
-                    create: "/blog-posts/create",
-                    edit: "/blog-posts/edit/:id",
-                    show: "/blog-posts/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
+                    name: "dashboard",
+                    list: "/dashboard",
+                    icon: <DashboardIcon></DashboardIcon> ,
+                    
                   },
                   {
                     name: "users",
                     list: "/users",
+                    icon:<PeopleAltOutlined></PeopleAltOutlined>,
                     create: "/users/create",
                     edit: "/users/edit/:id",
                     show: "/users/show/:id",
@@ -316,7 +327,7 @@ function App() {
                       </Authenticated>
                     }
                   >
-                    <Route
+                    {/* <Route
                       index
                       element={<NavigateToResource resource="blog_posts" />}
                     />
@@ -325,7 +336,12 @@ function App() {
                       <Route path="create" element={<BlogPostCreate />} />
                       <Route path="edit/:id" element={<BlogPostEdit />} />
                       <Route path="show/:id" element={<BlogPostShow />} />
-                    </Route>
+                    </Route> */}
+
+                     <Route path="/dashboard">
+                            <Route index element={<Dashboard/>} />
+                           <Route path="*" element={<ErrorComponent />} />
+                      </Route>
                     <Route path="/users">
                       {/* <Route index element={<UserList role={role} />} /> */}
                       <Route index element={<UserList/>} />
