@@ -94,7 +94,8 @@ function App() {
       if(profileObj)
       {
         try{
-        const response=await fetch('http://localhost:8000/api/v1/users/google' ,{
+        // const response=await fetch('http://localhost:8000/api/v1/users/google' ,{
+        const response=await fetch('http://localhost:8000/api/register/google' ,{
             method:'POST',
             headers:{ 'Content-Type': 'application/json'},
             body:JSON.stringify({
@@ -287,7 +288,7 @@ function App() {
                   // },
                   {
                     name: "dashboard",
-                    list: "/dashboard",
+                    list: "/",
                     icon: <DashboardIcon></DashboardIcon> ,
                     
                   },
@@ -338,7 +339,7 @@ function App() {
                       <Route path="show/:id" element={<BlogPostShow />} />
                     </Route> */}
 
-                     <Route path="/dashboard">
+                     <Route path="/">
                             <Route index element={<Dashboard/>} />
                            <Route path="*" element={<ErrorComponent />} />
                       </Route>
