@@ -11,6 +11,7 @@ const getAllUsers= async (req,res) =>{
         res.status(500).json({ message: error.message });
       }
 };
+
 const createUser= async(req,res)=>{
     try{
       const {email,password,name}=req.body;
@@ -38,31 +39,6 @@ const createUser= async(req,res)=>{
         res.status(500).json({message:error.message});
         console.log("Error");
     }
-};
-const createGoogleUser= async(req,res)=>{
-  try{
-      const {name,email,avatar}=req.body;
-      console.log(name,email,avatar);
-      const userExists= await User.findOne({email});
-      console.log("User exists",userExists);
-      if(userExists) return res.status(200).json(userExists);
-      
-      const newUser= await User.create({
-          name,email,avatar,
-          
-      })
-      if(email==process.env.ADMIN_EMAIL)
-          {
-           newUser.role=roles.admin;
-          }
-          await newUser.save();
-      res.status(200).json(newUser);
-      console.log("Registered");
-  }
-  catch(error){
-      res.status(500).json({message:error.message});
-      console.log("Error");
-  }
 };
 
 const getUserById = async (req, res) => {
@@ -127,5 +103,5 @@ export {
     getUserById,
     updateUserRole,
     deleteUser,
-    createGoogleUser
+    // createGoogleUser
 }

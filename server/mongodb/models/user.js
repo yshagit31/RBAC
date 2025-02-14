@@ -7,6 +7,7 @@ const userSchema= new mongoose.Schema({
     password:{type:String, required:false },
     role :{type:String, enum:[roles.admin, roles.moderator,roles.client],default:roles.client },
     avatar:{type:String },
+    lastLogin:{type:Date, default:null},
     // authMethod:{
     //     type: String,
     //     enum:["google","local"],
