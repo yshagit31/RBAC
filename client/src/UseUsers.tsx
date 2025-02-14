@@ -10,7 +10,7 @@ interface IUser {
 }
 
 const useUsers = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,9 +31,9 @@ const useUsers = () => {
     }
   };
 
-  useEffect(() => {
+
     fetchUsers();
-  }, []);
+    console.log("Users",users);
 
   return { users, loading, error, fetchUsers };
 };
