@@ -276,16 +276,6 @@ function App() {
                 routerProvider={routerBindings}
                 authProvider={authProvider}
                 resources={[
-                  // {
-                  //   name: "blog_posts",
-                  //   list: "/blog-posts",
-                  //   create: "/blog-posts/create",
-                  //   edit: "/blog-posts/edit/:id",
-                  //   show: "/blog-posts/show/:id",
-                  //   meta: {
-                  //     canDelete: true,
-                  //   },
-                  // },
                   {
                     name: "dashboard",
                     list: "/",
@@ -328,17 +318,6 @@ function App() {
                       </Authenticated>
                     }
                   >
-                    {/* <Route
-                      index
-                      element={<NavigateToResource resource="blog_posts" />}
-                    />
-                    <Route path="/blog-posts">
-                      <Route index element={<BlogPostList />} />
-                      <Route path="create" element={<BlogPostCreate />} />
-                      <Route path="edit/:id" element={<BlogPostEdit />} />
-                      <Route path="show/:id" element={<BlogPostShow />} />
-                    </Route> */}
-
                      <Route path="/">
                             <Route index element={<Dashboard/>} />
                            <Route path="*" element={<ErrorComponent />} />
