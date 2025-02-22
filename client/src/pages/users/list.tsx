@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import axios from "axios";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { DeleteButton, EditButton, ShowButton, List, useDataGrid } from "@refinedev/mui";
@@ -6,6 +6,7 @@ import {MenuItem, Select, FormControl, Dialog, DialogActions, DialogContent, Dia
 import { useGetIdentity, useDelete } from "@refinedev/core";
 import { useNotification } from "@refinedev/core";
 import { SelectChangeEvent } from "@mui/material";
+import { ColorModeContext } from "../../contexts/color-mode";
 
 type IUser = {
   _id: string;
@@ -24,6 +25,7 @@ export const UserList = () => {
   const { mutate } = useDelete();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const {mode}=useContext(ColorModeContext);
   // const [IsAdmin,setIsAdmin]=useState(false);
 
   useEffect(() => {
@@ -207,7 +209,18 @@ export const UserList = () => {
   };
 
   return (
-  <List headerButtons={IsClient ? [] : undefined}>
+  <List headerButtons={IsClient ? [] : undefined}
+  wrapperProps={{
+    sx: {
+      backgroundColor: mode==="dark"? "#1e1e1e": "#f8f9fa",
+      border: "none",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      // boxShadow: "none",
+      borderRadius: "8px",
+      // padding: "16px", 
+    },
+  }}
+  >
       <DataGrid
         rows={users}
         columns={columns}
@@ -216,6 +229,36 @@ export const UserList = () => {
         getRowId={(row) => row._id}
         sortingMode="client"
         disableColumnMenu={false} 
+        sx={{
+          backgroundColor:mode==="dark"? "" :"#fff",
+          "& .MuiDataGrid-cell": {
+            backgroundColor: mode==="dark" ? "": "#fff", 
+          },
+        }}
+
+        // sx={{
+        //   backgroundColor: "#f5f5f5", // Light gray background for the whole table
+        //   "& .MuiDataGrid-root": {
+        //     backgroundColor: "#f5f5f5", // Same background for consistency
+        //   },
+        //   "& .MuiDataGrid-columnHeaders": {
+        //     backgroundColor: "#f5f5f5", // Header with the same background
+        //     color: "#333",
+        //     fontWeight: "bold",
+        //   },
+        //   "& .MuiDataGrid-footerContainer": {
+        //     backgroundColor: "#f5f5f5", // Footer with the same background
+        //     color: "#333",
+        //   },
+        //   "& .MuiDataGrid-cell": {
+        //     backgroundColor: "#f5f5f5", // Ensure all cells have the same background
+        //     borderBottom: "1px solid #ddd", // Add subtle row separators
+        //   },
+        //   "& .MuiDataGrid-row": {
+        //     backgroundColor: "#f5f5f5", // Ensuring all rows are the same color
+        //   },
+        // }}
+      
       />
 
     <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>

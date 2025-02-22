@@ -1,9 +1,12 @@
+import { useContext } from "react";
 import { Box, TextField } from "@mui/material";
 import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { MenuItem, Select, FormControl, InputLabel, FormHelperText } from "@mui/material";
-
+import { ColorModeContext } from "../../contexts/color-mode";
 export const UserCreate = () => {
+  const {mode}=useContext(ColorModeContext);
+
   const {
     saveButtonProps,
     refineCore: { formLoading },
@@ -49,7 +52,7 @@ export const UserCreate = () => {
     />
 
     <FormControl fullWidth margin="normal" error={!!(errors as any)?.role} variant="outlined">
-      <InputLabel shrink sx={{ backgroundColor: "white", px: 1 }}>Role</InputLabel>
+      <InputLabel shrink sx={{ backgroundColor: mode=="dark" ? "" : "white", px: 1 }}>Role</InputLabel>
       <Select
         {...register("role", { required: "This field is required" })}
         defaultValue=""

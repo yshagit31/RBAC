@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Chart from "react-apexcharts";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { ColorModeContext } from "../../contexts/color-mode";
 
 interface ChartOptions {
   chart: {
@@ -14,13 +15,26 @@ interface ChartOptions {
   };
   xaxis:{
     categories:string[];
-  }
+    labels:{
+      style:{
+        colors: string,
+      }
+    }
+  };
+  yaxis: {
+    labels:{
+      style:{
+        colors: string,
+      }
+    }
+  };
   colors: string[];
   plotOptions:{
     bar:{
       horizontal:boolean;
       borderRadius:number;
       columnWidth:string;
+      distributed: boolean,
     };
   };
   dataLabels:{
@@ -29,6 +43,9 @@ interface ChartOptions {
   grid: {
         show: boolean;
       };
+      legend:{
+        show:boolean;
+      }
 }
 
 interface ChartProps{
@@ -36,6 +53,7 @@ userCounts:{[key:string]:number};
 }
 
 const BarChart: React.FC<ChartProps> = ({userCounts}) => {
+ const {mode}=useContext(ColorModeContext)
   
   const uniqueYears=Array.from(
     new Set(Object.keys(userCounts).map((key)=>key.split(" ")[1]))  
@@ -59,6 +77,7 @@ const BarChart: React.FC<ChartProps> = ({userCounts}) => {
     {
       name: "Users",
       data: data, 
+      // data: [10,12,5], 
     },
   ];
 
@@ -72,17 +91,30 @@ const BarChart: React.FC<ChartProps> = ({userCounts}) => {
     },
     xaxis: {
       categories: categories, 
+      labels:{
+        style:{
+          colors: mode==="dark" ? "#ffffff":""
+        }
+      }
+    },
+    yaxis: {
+      labels:{
+        style:{
+          colors: mode==="dark" ? "#ffffff":""
+        }
+      }
     },
     // colors: ["#3498db"], // Bar color
     // colors: ["#0056b3"], 
     // colors: ["#275be8"], 
-    colors: ["#475BE8", "#CFC8FF"],
+    colors: ["#CFC8FF", "#475BE8"],
 
     plotOptions: {
       bar: {
         horizontal: false, // Vertical bars
         borderRadius: 5,
         columnWidth: "80%", 
+        distributed: true,
       },
     },
     dataLabels: {
@@ -90,6 +122,9 @@ const BarChart: React.FC<ChartProps> = ({userCounts}) => {
     },
     grid:{
       show:true,
+    },
+    legend:{
+      show:false,
     }
   };
 
@@ -100,10 +135,11 @@ const BarChart: React.FC<ChartProps> = ({userCounts}) => {
 
 
   return (
-    <div style={{display:"flex", marginLeft:"30px"}}>
+    // <div style={{display:"flex", marginLeft:"30px"}}>
+    <div style={{display:"flex"}}>
     <div
     style={{
-      backgroundColor: "#f8f9fa",
+      backgroundColor: mode === "dark" ? "#1e1e1e" : "#f8f9fa",
       padding: "10px",
       borderRadius: "8px",
       height: "430px", // Adjusted height to match BarChart
@@ -132,13 +168,13 @@ const BarChart: React.FC<ChartProps> = ({userCounts}) => {
           }}
         >
           {uniqueYears.map((year)=>(
-            <MenuItem value={year}>{year}</MenuItem>
+            <MenuItem key={year} value={year}>{year}</MenuItem>
           ))}
 
         </Select>
       </FormControl>
       </div>
-      <Chart options={options} series={series} type="bar" width="500" />
+      <Chart options={options} series={series} type="bar" width="520" />
     </div>
     <div style={{ backgroundColor:"#f8f9fa"}}>
 

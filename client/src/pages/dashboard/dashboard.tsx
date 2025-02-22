@@ -5,8 +5,10 @@ import { Card, CardContent, Typography, Box, Stack } from "@mui/material";
 import StatCard from './StatCard'
 import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import BusinessIcon from "@mui/icons-material/Business";
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Security } from '@mui/icons-material';
 import axios from "axios";
 import PieChart from './PieChart';
 import BarChart from './BarChart';
@@ -96,12 +98,12 @@ export const Dashboard = () => {
 
  
   return (
-    <Box>
+    <Box margin="10px">
     <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "repeat(4, 1fr)" }} gap={3} mb={3}>
     <StatCard title="Total Users" value={totalUsers} icon={PeopleIcon} color="blue" />
-    <StatCard title="Admins" value={totalAdmin} icon={AdminPanelSettingsIcon} color="orange" />
-    <StatCard title="Clients" value={totalClient} icon={BusinessIcon} color="purple" />
-    <StatCard title="Active Users" value={totalactiveUsers} icon={PersonIcon} color="green" />
+    <StatCard title="Admins" value={totalAdmin} icon={Security} color="orange" />
+    <StatCard title="Clients" value={totalClient} icon={PersonOutlineIcon} color="purple" />
+    <StatCard title="Active Users" value={totalactiveUsers} icon={TaskAltIcon} color="green" />
     </Box>
     
       <Stack direction="row" spacing={6} alignItems="center" justifyItems="sapce-around">
