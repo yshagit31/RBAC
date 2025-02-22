@@ -28,7 +28,8 @@ export const UserShow = () => {
 
 
   return (
-    <Show isLoading={isLoading} {... (!canEdit  ? {canDelete : false, canEdit : false} : {}) }   >
+    <Show isLoading={isLoading} {... (!canEdit  ? {canDelete : false, canEdit : false} : {}) }  
+    >
       <Stack gap={1}>
         <Typography variant="body1" fontWeight="bold">
           {"ID"}

@@ -224,11 +224,11 @@ function App() {
 
   const { siderCollapsed } = useThemedLayoutContext();
 
-  console.log("collapsed",siderCollapsed);
+  // console.log("collapsed",siderCollapsed);
 
-  useEffect(()=>{
-    console.log("collapsed",siderCollapsed);
-  },[siderCollapsed])
+  // useEffect(()=>{
+  //   console.log("collapsed",siderCollapsed);
+  // },[siderCollapsed])
 
   const MyTitle: React.FC = () => (
 
