@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { ColorModeContext } from "../../contexts/color-mode";
+import { ApexOptions } from "apexcharts"; 
 
 interface RoleData {
   name: string;
@@ -22,7 +23,7 @@ interface PieChartProps {
   //  console.log("series",series);
    const labels = roleData.map((data) => data.name);
 
-   const options = {
+   const options: ApexOptions  = {
     chart: {
       type: "pie",
     },

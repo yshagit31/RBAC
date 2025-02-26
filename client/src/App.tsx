@@ -28,12 +28,12 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Header } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { CredentialResponse } from "./interfaces/google";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
+// import {
+//   BlogPostCreate,
+//   BlogPostEdit,
+//   BlogPostList,
+//   BlogPostShow,
+// } from "./pages/blog-posts";
 import { Dashboard } from "./pages/dashboard";
 
 import {
@@ -48,7 +48,7 @@ import { profile } from "console";
 import Register from "./pages/register";
 import { useState,useEffect } from "react";
 import { CustomSider } from "./components/header/CustomSider";
-import {logo,yariga} from "./assets"
+import { logo, yariga } from "./assets/index"; 
 import { useThemedLayoutContext } from "@refinedev/mui";
 import { PeopleAltOutlined } from "@mui/icons-material";
 import DashboardIcon from '@mui/icons-material/Dashboard';

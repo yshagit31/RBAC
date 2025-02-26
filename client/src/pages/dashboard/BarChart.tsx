@@ -8,7 +8,7 @@ import { ColorModeContext } from "../../contexts/color-mode";
 
 interface ChartOptions {
   chart: {
-    type: string;
+    type: "bar";
     toolbar: {
       show: boolean
         },

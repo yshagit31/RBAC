@@ -1,8 +1,18 @@
 import { useContext } from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { ColorModeContext } from "../../contexts/color-mode";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 
-const StatCard = ({ title, value, icon: Icon, color }) => {
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+  color: string;
+}
+
+
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, color }) => {
   const {mode}=useContext(ColorModeContext)
   return (
     <Card sx={{ boxShadow: "none", backgroundColor: "transparent" }}>
