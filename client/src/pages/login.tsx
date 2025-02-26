@@ -11,6 +11,12 @@ import { CredentialResponse } from "../interfaces/google";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+interface EmailLoginData {
+  email: string;
+  password: string;
+}
+
+
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -22,7 +28,8 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { mutate: login } = useLogin<CredentialResponse>();
+  // const { mutate: login } = useLogin<CredentialResponse>();
+  const { mutate: login } = useLogin<EmailLoginData | CredentialResponse>();
 
   const THEME = createTheme({
     palette: {
@@ -40,7 +47,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login({ email, password });  // Email/password login
+      await login({ email, password } as EmailLoginData);const loginData: EmailLoginData = { email, password };
       navigate("/");  // Navigate to the homepage
     } catch (error) {
       setErrorMessage("Email login failed!");  // Display error message
